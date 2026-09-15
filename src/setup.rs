@@ -36,6 +36,29 @@ struct Owned {
     command: Option<String>,
 }
 
+fn removal_baseline(previous: Owned, current: &Owned) -> Result<Option<String>> {
+    if current.before.as_ref() == Some(&previous.after) {
+        return Ok(previous.before);
+    }
+    // An upgrade must retain edits made since the previous Configure. Saving
+    // only the first-install snapshot would erase those edits on Unconfigure.
+    current
+        .before
+        .as_deref()
+        .map(|text| {
+            if current.kind == "sidebar" {
+                sidebar(text, true)
+            } else {
+                hooks(
+                    text,
+                    current.command.as_deref().context("Missing owned hook")?,
+                    true,
+                )
+            }
+        })
+        .transpose()
+}
+
 fn home() -> PathBuf {
     PathBuf::from(env::var_os("HOME").unwrap_or_default())
 }
@@ -386,7 +409,7 @@ pub fn configure(options: &Configure, rt: &Runtime, paths: &Paths) -> Result<()>
             )
             .optional()?
         {
-            owned.before = serde_json::from_str::<Owned>(&old)?.before;
+            owned.before = removal_baseline(serde_json::from_str(&old)?, &owned)?;
         }
         tx.execute(
             "INSERT INTO ownership VALUES (?,?) ON CONFLICT(path) DO UPDATE SET body=excluded.body",
@@ -474,6 +497,83 @@ pub fn unconfigure(rt: &Runtime, paths: &Paths) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn upgrade_removal_keeps_settings_added_after_first_install() {
+        let command = "'/stable/herdr-progress' hook --agent codex";
+        let original =
+            "{\"hooks\":{\"SessionStart\":[{\"hooks\":[{\"command\":\"native-hook\"}]}]}}";
+        let configured = hooks(original, command, false).unwrap();
+        let edited = configured.replacen('{', "{\n// keep my comment\n\"user_setting\":true,", 1);
+        let previous = Owned {
+            before: Some(original.into()),
+            after: configured,
+            kind: "hooks".into(),
+            command: Some(command.into()),
+        };
+        let current = Owned {
+            before: Some(edited.clone()),
+            after: hooks(&edited, command, false).unwrap(),
+            kind: "hooks".into(),
+            command: Some(command.into()),
+        };
+        let restored = removal_baseline(previous, &current).unwrap().unwrap();
+        assert!(restored.contains("user_setting"));
+        assert!(restored.contains("keep my comment"));
+        assert!(restored.contains("native-hook"));
+        assert!(!restored.contains("herdr-progress"));
+
+        let configured = sidebar("[ui]\nsidebar_width = 26\n", false).unwrap();
+        let edited = configured.replace("26", "32") + "\n# keep this too\n";
+        let previous = Owned {
+            before: Some("[ui]\nsidebar_width = 26\n".into()),
+            after: configured,
+            kind: "sidebar".into(),
+            command: None,
+        };
+        let current = Owned {
+            before: Some(edited.clone()),
+            after: sidebar(&edited, false).unwrap(),
+            kind: "sidebar".into(),
+            command: None,
+        };
+        let restored = removal_baseline(previous, &current).unwrap().unwrap();
+        assert!(restored.contains("sidebar_width = 32"));
+        assert!(restored.contains("keep this too"));
+        assert!(!restored.contains("$agent_progress_"));
+    }
+
+    #[test]
+    fn unchanged_upgrade_keeps_original_snapshot_but_deleted_files_stay_deleted() {
+        for before in [None, Some("original".to_owned())] {
+            let previous = Owned {
+                before: before.clone(),
+                after: "configured".into(),
+                kind: "hooks".into(),
+                command: None,
+            };
+            let current = Owned {
+                before: Some("configured".into()),
+                after: "configured".into(),
+                kind: "hooks".into(),
+                command: None,
+            };
+            assert_eq!(removal_baseline(previous, &current).unwrap(), before);
+        }
+        let previous = Owned {
+            before: Some("original".into()),
+            after: "configured".into(),
+            kind: "hooks".into(),
+            command: None,
+        };
+        let current = Owned {
+            before: None,
+            after: "configured".into(),
+            kind: "hooks".into(),
+            command: None,
+        };
+        assert_eq!(removal_baseline(previous, &current).unwrap(), None);
+    }
+
     #[test]
     fn existing_hooks_comments_and_user_edits_survive() {
         let original = "{\n// user's comment\n\"theme\": \"dark\",\"hooks\":{\"SessionStart\":[{\"hooks\":[{\"command\":\"keep\"}]}]}}";
