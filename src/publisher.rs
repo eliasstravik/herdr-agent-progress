@@ -39,15 +39,35 @@ pub fn start(rt: &Runtime, paths: &Paths) -> Result<()> {
         .create(true)
         .append(true)
         .open(paths.state.join("publisher.log"))?;
-    Command::new(std::env::current_exe()?)
+    let mut command = Command::new(std::env::current_exe()?);
+    command
         .args(["--endpoint", &rt.socket, "serve"])
         .env("HERDR_PLUGIN_CONFIG_DIR", &paths.config)
         .env("HERDR_PLUGIN_STATE_DIR", &paths.state)
         .stdin(Stdio::null())
         .stdout(Stdio::null())
-        .stderr(log)
-        .spawn()?;
-    Ok(())
+        .stderr(log);
+    // Hook/tool runners clean up their process group when the entrypoint exits.
+    // The endpoint publisher must survive that entrypoint.
+    #[cfg(unix)]
+    {
+        use std::os::unix::process::CommandExt;
+        command.process_group(0);
+    }
+    let mut child = command.spawn()?;
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while Instant::now() < deadline {
+        if l.try_lock_exclusive().is_err() {
+            return Ok(());
+        }
+        FileExt::unlock(&l)?;
+        ensure!(
+            child.try_wait()?.is_none(),
+            "Publisher exited during startup; inspect publisher.log"
+        );
+        std::thread::sleep(Duration::from_millis(20));
+    }
+    anyhow::bail!("Publisher did not acquire its endpoint lock; inspect publisher.log")
 }
 pub fn stop(rt: &Runtime, paths: &Paths) -> Result<()> {
     fs::write(paths.state.join(format!("{}.stop", name(rt))), b"stop")?;
@@ -135,7 +155,8 @@ pub fn publish(rt: &Runtime, c: &mut rusqlite::Connection, clear: bool) -> Resul
             s.revoked = true;
         }
         let tokens = state::tokens(&s, now());
-        let rendered = serde_json::to_string(&tokens)?;
+        let summary = state::summary(&tokens);
+        let rendered = serde_json::to_string(&(&tokens, &summary))?;
         if s.published == rendered {
             state::save(&tx, &s)?;
             tx.commit()?;
@@ -155,9 +176,10 @@ pub fn publish(rt: &Runtime, c: &mut rusqlite::Connection, clear: bool) -> Resul
             "agent_progress_percent",
             "agent_progress_freshness",
             "agent_progress_activity",
+            "agent_progress_summary",
         ]
         .iter()
-        .zip(tokens)
+        .zip(tokens.into_iter().chain([summary]))
         {
             match value {
                 Some(v) => {

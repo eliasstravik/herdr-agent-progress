@@ -201,9 +201,42 @@ pub fn next_sequence(c: &Connection, endpoint: &str) -> Result<i64> {
     Ok(c.query_row("INSERT INTO sequences VALUES (?,1) ON CONFLICT(endpoint) DO UPDATE SET value=value+1 RETURNING value", [endpoint], |r| r.get(0))?)
 }
 
+pub fn summary(tokens: &[Option<String>; 3]) -> Option<String> {
+    let text = tokens
+        .iter()
+        .flatten()
+        .cloned()
+        .collect::<Vec<_>>()
+        .join(" · ");
+    (!text.is_empty()).then(|| clean(&text, 80))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn summary_preserves_status_prefix_and_omits_missing_fields() {
+        assert_eq!(summary(&[None, None, None]), None);
+        assert_eq!(
+            summary(&[None, None, Some("Assessing task".into())]),
+            Some("Assessing task".into())
+        );
+        let rendered = summary(&[
+            Some("~95%".into()),
+            Some("stale".into()),
+            Some("界".repeat(80)),
+        ])
+        .unwrap();
+        assert!(rendered.starts_with("~95% · stale · "));
+        assert!(rendered.chars().count() <= 80);
+        assert!(
+            rendered
+                .chars()
+                .map(|c| c.width().unwrap_or(0))
+                .sum::<usize>()
+                <= 80
+        );
+    }
     fn identity() -> Identity {
         Identity {
             endpoint: "e".into(),

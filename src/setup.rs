@@ -89,6 +89,17 @@ fn replace(path: &Path, before: &Option<String>, after: &str) -> Result<()> {
 }
 
 fn row() -> toml_edit::Value {
+    // A single value lets Herdr truncate only the tail. Separate tokens receive
+    // separate width budgets and can truncate "stale" before the activity.
+    let mut a = Array::new();
+    let mut style = InlineTable::new();
+    style.insert("token", "$agent_progress_summary".into());
+    style.insert("dim", true.into());
+    a.push(style);
+    a.into()
+}
+
+fn legacy_row() -> toml_edit::Value {
     let mut a = Array::new();
     a.push("$agent_progress_percent");
     let mut style = InlineTable::new();
@@ -126,6 +137,12 @@ pub fn sidebar(input: &str, remove: bool) -> Result<String> {
     fn edit(item: &mut Item, remove: bool) -> Result<()> {
         let rows = item.as_array_mut().context("Sidebar rows must be arrays")?;
         let expected = row();
+        let legacy = legacy_row();
+        let is_legacy = |v: &toml_edit::Value| {
+            v.to_string().split_whitespace().collect::<String>()
+                == legacy.to_string().split_whitespace().collect::<String>()
+        };
+        rows.retain(|v| !is_legacy(v));
         let same = |v: &toml_edit::Value| {
             v.to_string().split_whitespace().collect::<String>()
                 == expected.to_string().split_whitespace().collect::<String>()
@@ -491,17 +508,17 @@ mod tests {
         assert!(
             sidebar("", false)
                 .unwrap()
-                .contains("$agent_progress_percent")
+                .contains("$agent_progress_summary")
         );
         assert!(
             sidebar("[ui.sidebar.agents]\nrows=[[\"agent\"]]", false)
                 .unwrap()
-                .contains("$agent_progress_percent")
+                .contains("$agent_progress_summary")
         );
         let original = "# preserved\n[ui.sidebar.agents]\nrows=[[\"agent\"]]\n[ui.sidebar.agents.rows_by_agent]\nclaude=[[\"state_icon\",\"agent\"]]\n";
         let added = sidebar(original, false).unwrap();
         assert!(added.contains("# preserved"));
-        assert_eq!(added.matches("$agent_progress_percent").count(), 2);
+        assert_eq!(added.matches("$agent_progress_summary").count(), 2);
         assert_eq!(sidebar(&added, false).unwrap(), added);
         assert!(!sidebar(&added, true).unwrap().contains("$agent_progress"));
         let full = format!(
@@ -509,6 +526,19 @@ mod tests {
             vec!["[\"agent\"]"; 16].join(",")
         );
         assert!(sidebar(&full, false).is_err());
+    }
+    #[test]
+    fn upgrade_replaces_legacy_row_without_using_an_extra_slot() {
+        let mut rows = vec!["[\"agent\"]".to_string(); 15];
+        rows.push(legacy_row().to_string());
+        let old = format!("[ui.sidebar.agents]\nrows=[{}]", rows.join(","));
+        let upgraded = sidebar(&old, false).unwrap();
+        assert_eq!(upgraded.matches("$agent_progress_summary").count(), 1);
+        assert!(!upgraded.contains("$agent_progress_percent"));
+        assert_eq!(sidebar(&upgraded, false).unwrap(), upgraded);
+        let removed = sidebar(&upgraded, true).unwrap();
+        assert!(!removed.contains("$agent_progress_"));
+        assert_eq!(removed.matches("\"agent\"").count(), 15);
     }
     #[test]
     fn detects_concurrent_edits() {
