@@ -1,99 +1,117 @@
-# Agent Progress for Herdr
+<p align="center"><img src="assets/agent-progress-badge.svg" alt="Agent Progress | Task progress for Herdr" /></p>
 
-An agent estimates how much of its current task is finished and reports a short activity. Herdr displays it in the expanded agent sidebar:
+<h3 align="center">See how far your coding agents have got without opening every terminal</h3>
 
-```text
-● codex · working
-  ~65% · Testing changes
-```
+<p align="center">Agent Progress adds each agent's estimated completion and current activity to the <a href="https://herdr.dev">Herdr</a> sidebar. See who's reading code, who's testing changes, and whose task is ready for review.</p>
 
-The estimate can decrease when the agent discovers more work. After five minutes without a report, the row becomes `~65% · stale · Testing changes`. Completed work displays `100% · Done`. Herdr's native working, blocked and idle states stay separate.
+<p align="center"><img src="assets/agent-progress-sidebar.svg" width="88%" alt="Illustrated Herdr sidebar showing an agent testing changes at about 65%, a stale estimate, and a completed task" /></p>
 
-## How it works
+<p align="center"><a href="docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></p>
 
-`herdr-progress` is one Rust executable with bundled instructions. Claude Code and Codex SessionStart hooks load those instructions automatically. The agent calls the CLI after milestones and before substantive replies. Tool-boundary hooks provide throttled reminders. No separate skill activation is required.
+<p align="center"><sub>MIT licensed &nbsp; · &nbsp; Local progress state &nbsp; · &nbsp; Claude Code and Codex on macOS</sub></p>
 
-A plugin-owned process publishes namespaced metadata into Herdr's native sidebar. It checks for overdue reports every 15 seconds and notices queued reports within approximately 250 milliseconds. It does no work in Herdr's render loop.
+<br />
 
-Automatic instruction loading does not grant tool permissions. A sandbox may require normal approval for the CLI to access Herdr's local socket, inspect process identity and write plugin state. Denied reporting does not stop the agent's actual task. The installer does not change sandbox settings or bypass native hook trust.
+## Know where the work stands before you switch tabs
 
-## Development status
+A busy agent might be starting its research or running its last check. Agent Progress shows the agent's estimate beside a short activity, so you can decide which terminal needs a closer look.
 
-The implementation targets Herdr 0.9.0 on macOS. Live validation and the client support matrix are recorded in [compatibility.md](compatibility.md). Other operating systems and agents are not advertised as automatically supported.
+## Choose the detail you need at a glance
 
-## Install from a checkout
+| | **Agent Progress** | Herdr's native agent state | Reading the conversation |
+|---|:---:|:---:|:---:|
+| **Visible in the sidebar** | Yes | Yes | No |
+| **Shows working, blocked, or idle** | Alongside native state | Yes | In context |
+| **Estimated task completion** | Yes | No | When the agent mentions it |
+| **Short current activity** | Yes | No | In context |
+| **Marks an old estimate as stale** | After five minutes | Not a task estimate | Check the last update |
+| **Full reasoning and tool output** | No | No | Yes |
 
-Build prerequisites are Rust/Cargo and the platform C compiler. SQLite is compiled into the executable; installed runtime commands need no Python or Node runtime. The native adapters also require Herdr's official session integrations.
+Keep native state for whether an agent is running or waiting. Use progress for how much of its task the agent thinks is finished. Open the conversation when you need the evidence.
 
-```sh
-cargo build --release --locked
-herdr plugin link "$PWD"
-herdr integration install claude
-herdr integration install codex
-herdr plugin action invoke configure --plugin agent-progress
-```
+## Follow the work from first look to final check
 
-Review Herdr's and the clients' normal trust prompts. Resume or restart existing agent sessions after configuration. Configure discovers installed Claude Code and Codex executables. To select clients or alternate homes explicitly:
+### See what each agent is doing
 
-```sh
-target/release/herdr-progress configure --clients codex --codex-home /absolute/path/to/codex-home
-```
+An expanded sidebar row reads `~65% · Testing changes`. Claude Code and Codex load the reporting instructions at session start and receive reminders while using tools. You don't need to invoke a skill for each task.
 
-`CLAUDE_CONFIG_DIR`, `CODEX_HOME`, `HERDR_CONFIG_PATH`, `XDG_CONFIG_HOME`, `XDG_STATE_HOME`, `HERDR_PLUGIN_CONFIG_DIR` and `HERDR_PLUGIN_STATE_DIR` are respected. Herdr plugin actions supply the plugin directories. Configure writes a stable launcher and copied executable in the plugin config directory, so hooks do not depend on PATH changes or an old checkout path.
+### Notice when an estimate needs another look
 
-The installer appends its own hooks and sidebar row, including existing per-agent row overrides. It preserves unrelated configuration and comments. Symlink configuration paths, malformed files, conflicting edited progress rows and full 16-row layouts are refused before any live config edit. Concurrent edits are checked before replacement.
+After five minutes without a report, the row includes `stale`. An agent can lower its estimate when it discovers more work, or report an activity without a percentage while it sizes up the task.
 
-For an upgrade, stop the publisher with `herdr-progress stop` in each running Herdr session before rebuilding, run Configure again, then resume or restart the agents. Stop clears the display and revokes launch bindings; a fresh SessionStart restores tasks for matching native sessions. Configure updates the copied executable, but does not replace an already-running publisher process.
+### Keep completion tied to the task
 
-## Commands
+A reported 100% displays `Done`. A new task starts a new estimate, and a verified resume restores the matching session's task. Completion is the agent's judgment, not proof that a human has accepted the work.
 
-```text
-herdr-progress --instructions                 # --skill is an alias; prints only
-herdr-progress context --binding B
-herdr-progress status --binding B
-herdr-progress begin --binding B --expected-task none --title 'Task title'
-herdr-progress report --binding B --task ID --percent 65 --activity 'Testing changes'
-herdr-progress report --binding B --task ID --unknown --activity 'Assessing task'
-herdr-progress clear --binding B --task ID
-herdr-progress doctor
-herdr-progress start
-herdr-progress stop
-herdr-progress unconfigure
-```
+## See your first progress update in three steps
 
-Use the absolute launcher path printed by the hook. `begin` returns the opaque task ID as JSON. On continuation or clarification, keep that ID. To replace a task, pass the exact current ID as `--expected-task`, including after clearing it. There is no unconditional task replacement. A completed task must get a new generation before further work is reported.
+<table>
+<tr>
+<td align="center" valign="top" width="33%"><h3>1</h3><b>Install the plugin</b><br /><sub>Run <code>herdr plugin install eliasstravik/herdr-agent-progress</code> inside Herdr. Herdr builds it with Cargo. Repository access is currently required.</sub></td>
+<td align="center" valign="top" width="33%"><h3>2</h3><b>Connect your clients</b><br /><sub>Install Herdr's Claude Code or Codex integration, then run <code>herdr plugin action invoke configure --plugin agent-progress</code>.</sub></td>
+<td align="center" valign="top" width="33%"><h3>3</h3><b>Give an agent a task</b><br /><sub>Restart or resume the client, review its normal trust prompts, and expand the agent sidebar. Estimates appear as the agent reports.</sub></td>
+</tr>
+</table>
 
-For manual activation by a human, `herdr-progress activate --pane PANE_ID` prints bound instructions after checking a live Claude/Codex process and its native session. It does not type into the pane. Other clients remain unavailable until their runtime identity can be verified. Printing `--instructions` alone never creates a binding.
+## Get everything included, free
 
-Administrative commands accept `--endpoint SOCKET`. Reporting commands require the invoking agent's inherited Herdr environment and reject endpoint overrides.
+<table align="center">
+<tr>
+<td align="center" valign="top"><sub>For developers running Claude Code or Codex in Herdr on macOS</sub><br /><h2>Free</h2><div align="left">&nbsp;&nbsp;✓&nbsp; Task estimates and activity in the native sidebar<br />&nbsp;&nbsp;✓&nbsp; Stale indicators and explicit completion<br />&nbsp;&nbsp;✓&nbsp; Session-start instructions and tool reminders<br />&nbsp;&nbsp;✓&nbsp; Progress restored for verified native resumes<br />&nbsp;&nbsp;✓&nbsp; Setup that preserves unrelated hooks and sidebar settings<br />&nbsp;&nbsp;✓&nbsp; MIT-licensed source with no plugin subscription</div></td>
+</tr>
+<tr>
+<td align="center"><a href="docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></td>
+</tr>
+</table>
 
-## Identity and publication
+The repository is currently private. You need access to install it. Your coding clients' usual usage charges still apply, including their work to report progress.
 
-Every bound operation checks the endpoint's socket identity, stable terminal ID, official native session, foreground agent PID and OS process start time. Agent-facing calls must descend from that process. The binding is an opaque consistency token, not a security boundary against other processes under the same OS account.
+## Get your questions answered
 
-Compaction within a launch reuses the binding. A verified resume in a new process rotates it and restores only the matching native session's task. Old bindings cannot read, replace, report or clear the successor's task. Pane moves resolve by terminal ID. Ambiguous identity is invalidated.
+### What do I need installed?
 
-SQLite transactions serialize task generation changes and publication decisions. Publication sequence numbers are persisted before sends, so a timeout or crash cannot reuse a sequence. The publisher uses one stable metadata source, `agent-progress`, and explicitly clears its four tokens. It does not use TTL to implement stale reports.
+macOS, Herdr 0.9.0 or newer, Rust/Cargo, a C compiler, Git, and a supported coding client. The tested client versions are Claude Code 2.1.272 and Codex 0.154.0. Follow the [getting-started guide](docs/getting-started.md) for native integrations and GitHub access.
 
-The default dim row uses `$agent_progress_summary`, with percentage and freshness before the activity so shortening the tail preserves them. The separate `$agent_progress_percent`, `$agent_progress_freshness` and `$agent_progress_activity` tokens are also available for custom layouts. The summary is capped at 80 characters and display columns; the activity is capped at 40 columns.
+### Is the percentage measured automatically?
 
-State lives in the plugin state directory, including `progress.sqlite3` and `publisher.log`. Per-endpoint OS file locks prevent competing background publishers. A crash releases the lock; Start, a valid hook or a reporting command restarts the publisher. Endpoint loss uses bounded backoff. Disabling or removing the Herdr registration makes hooks inert and causes the publisher to clear its tokens and exit when the endpoint remains reachable.
+No. The agent estimates progress across your whole task. It is not a timer, tool count, or time-to-finish prediction. Estimates can decrease, and an agent can report that it is still assessing the task.
 
-## Remove
+### Why is the sidebar empty?
 
-```sh
-herdr plugin action invoke unconfigure --plugin agent-progress
-herdr plugin unlink agent-progress
-```
+Configure the plugin, install the client's official Herdr integration, then restart or resume the client. The row appears after a verified session has reported progress. It is shown in the expanded agent sidebar. Run the [setup check](docs/getting-started.md#check-your-setup) if nothing appears.
 
-Use Herdr's `plugin uninstall` command for a GitHub-installed package. Unconfigure removes matching owned hooks and rows while preserving user edits. It retains the local state and stable launcher for diagnostics. Removing only the package leaves inert configuration entries; it is not full configuration cleanup.
+### Does setup change my existing hooks?
 
-## Verification
+It appends its own hooks and progress row, preserving unrelated configuration and comments. It refuses malformed files, symlink configuration paths, conflicting progress rows, and full sidebar layouts before editing live configuration. [Operations](docs/operations.md) explains configuration ownership and removal.
 
-```sh
-cargo test --locked
-cargo clippy --all-targets --locked -- -D warnings
-cargo fmt --check
-```
+### Will I need to approve anything?
 
-Tests cover task replacement races, tombstones after clear, unknown/decreasing estimates, stale/completed behavior, launch rotation, endpoint isolation, delayed publication after task replacement, failed-send sequence reservation, config preservation, row limits, helper filtering and caller ancestry. See the compatibility report for the separate live-test boundary.
+Review Herdr's install prompt and each client's normal hook trust prompts. A client sandbox may also ask for permission to access the local Herdr socket, process information, and plugin state. Setup does not change sandbox permissions. Denied reporting should not stop the agent's actual task.
+
+### What happens when I resume an agent?
+
+A verified resume restores that native session's task. An old process cannot update its replacement's task. A new request starts a new estimate, including after a previous task reached 100%.
+
+### Which clients and platforms work?
+
+Claude Code and Codex on macOS have live validation. Other clients and Linux are unverified; Windows reporting is unavailable. The [compatibility report](compatibility.md) lists the boundaries.
+
+### Where is progress stored?
+
+In a local SQLite database in the plugin state directory. A local publisher sends the display values to Herdr. The plugin has no hosted reporting service. Your coding client still uses its own service as usual.
+
+### How do I update or remove it?
+
+Use the [upgrade and removal steps](docs/getting-started.md#upgrade). Stop publishers before replacing the package, configure again after an upgrade, and unconfigure before uninstalling to remove owned hooks and rows.
+
+### What does it cost?
+
+Agent Progress is free and [MIT licensed](LICENSE). There is no plugin subscription or separate reporting API key. Your coding client's usage is billed as usual.
+
+## See where your agents have got
+
+<p align="center">Install, configure, and give an agent a task. Its next progress report puts the estimate and current activity beside the session you're already watching.</p>
+
+<p align="center"><a href="docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></p>
+
+<p align="center"><sub>MIT licensed &nbsp; · &nbsp; Local progress state &nbsp; · &nbsp; Claude Code and Codex on macOS</sub></p>
