@@ -44,6 +44,8 @@ Review native hook trust prompts. Setup does not grant reporting permission or b
 
 Restart or resume your Claude Code or Codex session after configuration. Give it a task with a few steps, then expand the agent list in Herdr's sidebar.
 
+## 5. Confirm progress appears
+
 As the agent reports, you should see rows like:
 
 ```text
@@ -57,6 +59,8 @@ These are examples, not fixed stages. The agent may revise its estimate or repor
 A following task should start a new estimate. A clarification or continuation should keep the current task. Compaction and a verified native resume preserve its progress.
 
 ## Check your setup
+
+Confirm that a real agent task produces an estimate in the expanded sidebar. For a setup check, run:
 
 ```bash
 herdr plugin list
