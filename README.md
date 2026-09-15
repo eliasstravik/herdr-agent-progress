@@ -1,55 +1,58 @@
-<p align="center"><img src="assets/agent-progress-badge.svg" alt="Agent Progress | Task progress for Herdr" /></p>
+<p align="center"><img src="https://img.shields.io/badge/Agent%20Progress-Task%20progress%20for%20Herdr-2ea44f?style=flat-square&labelColor=24292f" alt="Agent Progress | Task progress for Herdr" /></p>
 
-<h3 align="center">See how far your coding agents have got without opening every terminal</h3>
+<h3 align="center">Stay on top of your coding agents without opening every terminal or asking how far they've got</h3>
 
-<p align="center">Agent Progress adds each agent's estimated completion and current activity to the <a href="https://herdr.dev">Herdr</a> sidebar. See who's reading code, who's testing changes, and whose task is ready for review.</p>
+<p align="center">Agent Progress lets you check on your <a href="https://herdr.dev">Herdr</a> coding agents when several tasks are running and you don't know which one needs your attention, by putting each agent's estimated progress and current activity beside its session so you can see who's getting started, who's testing, and whose work is ready for a closer look.</p>
 
-<p align="center"><img src="assets/agent-progress-sidebar.svg" width="88%" alt="Illustrated Herdr sidebar showing an agent testing changes at about 65%, a stale estimate, and a completed task" /></p>
+<p align="center"><img src="assets/agent-progress-sidebar.svg" width="88%" alt="Illustration: a coding task leads to an agent's progress report, then an estimate and current activity in the Herdr sidebar" /></p>
 
-<p align="center"><a href="docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></p>
+<p align="center"><a href="https://github.com/eliasstravik/herdr-agent-progress/blob/main/docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></p>
 
-<p align="center"><sub>MIT licensed &nbsp; · &nbsp; Local progress state &nbsp; · &nbsp; Claude Code and Codex on macOS</sub></p>
+<p align="center"><sub>✓&nbsp;Free,&nbsp;MIT&nbsp;licensed &nbsp; ✓&nbsp;No&nbsp;extra&nbsp;API&nbsp;key &nbsp; ✓&nbsp;Claude&nbsp;Code&nbsp;and&nbsp;Codex&nbsp;on&nbsp;macOS</sub></p>
 
 <br />
 
-## Know where the work stands before you switch tabs
+## Keep track of the work while your agents get on with it
 
-A busy agent might be starting its research or running its last check. Agent Progress shows the agent's estimate beside a short activity, so you can decide which terminal needs a closer look.
+An agent that's reading code, running tests, or wrapping up shows you where it stands beside its session. You open the terminal that needs a closer look instead of working through every conversation to find out how far things have got.
 
-## Choose the detail you need at a glance
+## Choose between watching status dots, opening terminals, asking for updates, or checking the sidebar
 
-| | **Agent Progress** | Herdr's native agent state | Reading the conversation |
-|---|:---:|:---:|:---:|
-| **Visible in the sidebar** | Yes | Yes | No |
-| **Shows working, blocked, or idle** | Alongside native state | Yes | In context |
-| **Estimated task completion** | Yes | No | When the agent mentions it |
-| **Short current activity** | Yes | No | In context |
-| **Marks an old estimate as stale** | After five minutes | Not a task estimate | Check the last update |
-| **Full reasoning and tool output** | No | No | Yes |
+| | **Agent Progress** | Native status dots | Opening terminals | Asking for updates |
+|---|:---:|:---:|:---:|:---:|
+| **No extra software fee** | ✅ | ✅ | ✅ | ✅ |
+| **Visible beside the session** | ✅ | ✅ | ❌ | ❌ |
+| **No extra API key** | ✅ | ✅ | ✅ | ✅ |
+| **Read a reported task estimate** | ✅ | ❌ | ✅ | ✅ |
+| **Current task activity** | ✅ | ❌ | ✅ | ✅ |
+| **No repeated questions** | ✅ | ✅ | ✅ | ❌ |
+| **Old estimates marked stale** | ✅ | ❌ | ❌ | ❌ |
+| **No switching between panes** | ✅ | ✅ | ❌ | ❌ |
+| **Full conversation and tool output** | ❌ | ❌ | ✅ | ❌ |
 
-Keep native state for whether an agent is running or waiting. Use progress for how much of its task the agent thinks is finished. Open the conversation when you need the evidence.
+Keep your attention on the work that needs it. Agent Progress shows the estimate, your agents report as they work, and you choose which conversation to open next.
 
-## Follow the work from first look to final check
+## Give your agents a task. See how far they've got in the sidebar.
 
-### See what each agent is doing
+### 📈 See the work at a glance
 
-An expanded sidebar row reads `~65% · Testing changes`. Claude Code and Codex load the reporting instructions at session start and receive reminders while using tools. You don't need to invoke a skill for each task.
+Each reporting Claude Code or Codex session shows an estimate and a short activity beside its name. Read `~65% · Testing changes` and know what the agent is doing before opening its terminal.
 
-### Notice when an estimate needs another look
+### ⚡ Stop asking for another progress update
 
-After five minutes without a report, the row includes `stale`. An agent can lower its estimate when it discovers more work, or report an activity without a percentage while it sizes up the task.
+Give an agent a task and let it report as it works. The sidebar keeps its latest estimate in view while you work elsewhere, and marks an unfinished report stale after five minutes without an update.
 
-### Keep completion tied to the task
+### 💬 Know when to take a closer look
 
-A reported 100% displays `Done`. A new task starts a new estimate, and a verified resume restores the matching session's task. Completion is the agent's judgment, not proof that a human has accepted the work.
+An agent that reports 100% shows `Done`, so you can open the conversation and review its work. The next task starts a fresh estimate. You still decide whether the result is good enough.
 
-## See your first progress update in three steps
+## Set up your first progress update in three steps
 
 <table>
 <tr>
-<td align="center" valign="top" width="33%"><h3>1</h3><b>Install the plugin</b><br /><sub>Run <code>herdr plugin install eliasstravik/herdr-agent-progress</code> inside Herdr. Herdr builds it with Cargo. Repository access is currently required.</sub></td>
-<td align="center" valign="top" width="33%"><h3>2</h3><b>Connect your clients</b><br /><sub>Install Herdr's Claude Code or Codex integration, then run <code>herdr plugin action invoke configure --plugin agent-progress</code>.</sub></td>
-<td align="center" valign="top" width="33%"><h3>3</h3><b>Give an agent a task</b><br /><sub>Restart or resume the client, review its normal trust prompts, and expand the agent sidebar. Estimates appear as the agent reports.</sub></td>
+<td align="center" valign="top" width="33%"><h3>1️⃣</h3><b>Install the plugin</b><br /><sub>Run <code>herdr plugin install eliasstravik/herdr-agent-progress</code>. The plugin builds itself with Cargo. You'll need access to the private repository.</sub></td>
+<td align="center" valign="top" width="33%"><h3>2️⃣</h3><b>Connect your coding clients</b><br /><sub>Install your client's Herdr integration, then run <code>herdr plugin action invoke configure --plugin agent-progress</code>. Review the normal trust prompts.</sub></td>
+<td align="center" valign="top" width="33%"><h3>3️⃣</h3><b>Give an agent a task</b><br /><sub>Restart or resume your client and give it work. Expand the agent sidebar to see its estimate and current activity as it reports.</sub></td>
 </tr>
 </table>
 
@@ -57,61 +60,61 @@ A reported 100% displays `Done`. A new task starts a new estimate, and a verifie
 
 <table align="center">
 <tr>
-<td align="center" valign="top"><sub>For developers running Claude Code or Codex in Herdr on macOS</sub><br /><h2>Free</h2><div align="left">&nbsp;&nbsp;✓&nbsp; Task estimates and activity in the native sidebar<br />&nbsp;&nbsp;✓&nbsp; Stale indicators and explicit completion<br />&nbsp;&nbsp;✓&nbsp; Session-start instructions and tool reminders<br />&nbsp;&nbsp;✓&nbsp; Progress restored for verified native resumes<br />&nbsp;&nbsp;✓&nbsp; Setup that preserves unrelated hooks and sidebar settings<br />&nbsp;&nbsp;✓&nbsp; MIT-licensed source with no plugin subscription</div></td>
+<td align="center" valign="top"><sub>For developers who run Claude Code or Codex in Herdr on macOS</sub><br /><h2>Free</h2><div align="left">&nbsp;&nbsp;&nbsp;✓&nbsp; Task estimates beside each reporting session<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Current activity without opening the terminal<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Stale markers when an update gets old<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Done when an agent reports its task complete<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Progress restored when a verified session resumes<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Setup that keeps your existing hooks and settings</div></td>
 </tr>
 <tr>
-<td align="center"><a href="docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></td>
+<td align="center"><a href="https://github.com/eliasstravik/herdr-agent-progress/blob/main/docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></td>
 </tr>
 </table>
 
-The repository is currently private. You need access to install it. Your coding clients' usual usage charges still apply, including their work to report progress.
-
 ## Get your questions answered
 
-### What do I need installed?
+### Do I need to know how to code?
 
-macOS, Herdr 0.9.0 or newer, Rust/Cargo, a C compiler, Git, and a supported coding client. The tested client versions are Claude Code 2.1.272 and Codex 0.154.0. Follow the [getting-started guide](docs/getting-started.md) for native integrations and GitHub access.
+No. The plugin builds itself on install, and setup connects your coding clients and adds the sidebar row. You'll need macOS, Herdr 0.9.0 or newer, Rust/Cargo, and repository access. The [getting-started guide](docs/getting-started.md) covers the prerequisites and supported clients.
 
-### Is the percentage measured automatically?
+### How do I check that Agent Progress is running?
 
-No. The agent estimates progress across your whole task. It is not a timer, tool count, or time-to-finish prediction. Estimates can decrease, and an agent can report that it is still assessing the task.
+Expand the agent sidebar after giving a configured client a task. If no estimate appears, run:
 
-### Why is the sidebar empty?
+```bash
+herdr plugin action invoke doctor --plugin agent-progress
+```
 
-Configure the plugin, install the client's official Herdr integration, then restart or resume the client. The row appears after a verified session has reported progress. It is shown in the expanded agent sidebar. Run the [setup check](docs/getting-started.md#check-your-setup) if nothing appears.
+The command checks the plugin's setup. The [getting-started guide](docs/getting-started.md#check-your-setup) walks through missing updates, restarting clients, and checking their hooks.
 
-### Does setup change my existing hooks?
+### What permissions does progress reporting need?
 
-It appends its own hooks and progress row, preserving unrelated configuration and comments. It refuses malformed files, symlink configuration paths, conflicting progress rows, and full sidebar layouts before editing live configuration. [Operations](docs/operations.md) explains configuration ownership and removal.
+Access to the **local Herdr socket**, process information, and the plugin's state directory. Review your client's normal hook trust and sandbox prompts. Setup doesn't grant those permissions for you.
 
-### Will I need to approve anything?
+### Does the plugin send progress to a hosted service?
 
-Review Herdr's install prompt and each client's normal hook trust prompts. A client sandbox may also ask for permission to access the local Herdr socket, process information, and plugin state. Setup does not change sandbox permissions. Denied reporting should not stop the agent's actual task.
+No. The plugin stores progress on your machine and sends the display values to your local Herdr session. Your coding client still uses its own service as usual. [Operations](docs/operations.md) covers how reporting works.
 
-### What happens when I resume an agent?
+### Will setup change my existing hooks and settings?
 
-A verified resume restores that native session's task. An old process cannot update its replacement's task. A new request starts a new estimate, including after a previous task reached 100%.
+It adds its own hooks and sidebar row while keeping unrelated settings. If setup finds a conflicting row or a file it can't safely edit, it stops and tells you why. [Removal](docs/getting-started.md#remove) takes out the plugin's entries and preserves your edits.
 
-### Which clients and platforms work?
+### Where does my progress live?
 
-Claude Code and Codex on macOS have live validation. Other clients and Linux are unverified; Windows reporting is unavailable. The [compatibility report](compatibility.md) lists the boundaries.
+In a local database in the plugin's state directory. A verified session resume restores that session's task, so you can pick up where you left off. A new task starts its own estimate.
 
-### Where is progress stored?
+### Do I have to ask agents to report on every task?
 
-In a local SQLite database in the plugin state directory. A local publisher sends the display values to Herdr. The plugin has no hosted reporting service. Your coding client still uses its own service as usual.
+No. Once configured, Claude Code and Codex load the reporting instructions when a session starts and receive reminders as they use tools. Restart or resume your client after setup. [Compatibility](compatibility.md) lists the tested versions.
 
-### How do I update or remove it?
+### What if an estimate is wrong or stops updating?
 
-Use the [upgrade and removal steps](docs/getting-started.md#upgrade). Stop publishers before replacing the package, configure again after an upgrade, and unconfigure before uninstalling to remove owned hooks and rows.
+The percentage is the agent's estimate, so it can go down when the agent finds more work. An unfinished report gets a `stale` label after five minutes without an update. Open the conversation to check; `Done` still needs your review.
 
 ### What does it cost?
 
-Agent Progress is free and [MIT licensed](LICENSE). There is no plugin subscription or separate reporting API key. Your coding client's usage is billed as usual.
+Agent Progress is free and [MIT licensed](LICENSE). You need access to the private repository to install it. Your coding client's usual usage charges still apply, including its work to report progress.
 
-## See where your agents have got
+## See your first progress update in three steps
 
-<p align="center">Install, configure, and give an agent a task. Its next progress report puts the estimate and current activity beside the session you're already watching.</p>
+<p align="center">Your first progress update starts with an install, client setup, and a task. Agent Progress keeps the updates in view. You choose which conversation needs a closer look.</p>
 
-<p align="center"><a href="docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></p>
+<p align="center"><a href="https://github.com/eliasstravik/herdr-agent-progress/blob/main/docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></p>
 
-<p align="center"><sub>MIT licensed &nbsp; · &nbsp; Local progress state &nbsp; · &nbsp; Claude Code and Codex on macOS</sub></p>
+<p align="center"><sub>✓&nbsp;Free,&nbsp;MIT&nbsp;licensed &nbsp; ✓&nbsp;No&nbsp;extra&nbsp;API&nbsp;key &nbsp; ✓&nbsp;Claude&nbsp;Code&nbsp;and&nbsp;Codex&nbsp;on&nbsp;macOS</sub></p>
