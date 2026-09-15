@@ -1,0 +1,36 @@
+id = "agent-progress"
+name = "Agent Progress"
+version = "0.1.0"
+min_herdr_version = "0.9.0"
+description = "Shows an agent's estimated task completion and current activity in the native sidebar."
+platforms = ["macos"]
+
+[[build]]
+command = ["cargo", "build", "--release", "--locked"]
+
+[[startup]]
+command = ["target/release/herdr-progress", "start"]
+
+[[actions]]
+id = "configure"
+title = "Configure agent progress"
+contexts = ["workspace"]
+command = ["target/release/herdr-progress", "configure"]
+
+[[actions]]
+id = "activate"
+title = "Print bound progress instructions for selected agent"
+contexts = ["workspace"]
+command = ["target/release/herdr-progress", "activate"]
+
+[[actions]]
+id = "doctor"
+title = "Check agent progress setup"
+contexts = ["workspace"]
+command = ["target/release/herdr-progress", "doctor"]
+
+[[actions]]
+id = "unconfigure"
+title = "Remove agent progress configuration"
+contexts = ["workspace"]
+command = ["target/release/herdr-progress", "unconfigure"]
