@@ -60,3 +60,13 @@ The [current Herdr agent list](https://herdr.dev/docs/agents/) defines the cover
 - Disabling the plugin cleared all four tokens from both real clients and stopped the publisher. Unconfigure removed the owned hooks/rows and ownership journal, retained user sidebar settings and the original Herdr integration hooks, and revoked both bindings. After unlinking, hooks produced no context. The disposable server was stopped and the credential symlinks were removed.
 
 Evidence consists of native Herdr terminal grids captured from tmux and rendered as images/video, rather than desktop screenshots. Temporary test code and captures stay outside the repository.
+
+## Repository installation and setup follow-up (2026-09-15)
+
+- Installed the private GitHub repository's `main` revision through `herdr plugin install`, then installed the implementation branch through `--ref`. Both ran the manifest's locked Cargo release build in Herdr's managed checkout. No developer checkout was used for these installs. GitHub repository access is required; this is not public distribution.
+- In an isolated running Herdr 0.9.0 session on macOS, installed the official Claude/Codex integrations and exercised Configure, Doctor, Stop, Start, reconfiguration, Unconfigure, and package uninstall. Checked action completion logs, not just action submission. Fresh unconfigured startup now succeeds with a Configure instruction.
+- The cleanup check exposed user settings being lost after reconfiguration. The ownership journal now refreshes its removal baseline when the user edits a file. Regression tests and a managed-install lifecycle check confirm that added Claude/Codex settings, native integration hooks, and a Herdr config comment survive reconfiguration and removal.
+- In the active native Codex session, verified real bound progress updates in Herdr's sidebar. Captured a separate existing native session's `100% · Done` state. These captures are terminal-grid excerpts; other sessions are omitted. This follow-up did not start fresh model sessions or repeat the earlier native resume/compaction tests. Those results remain documented above.
+- Rendered the README and getting-started guide with GitHub's Markdown API and local preview styling; reviewed screenshots and a CTA navigation recording. The preview verifies content and local links, not GitHub's exact page chrome. README SVGs are labeled illustrations, separate from live evidence.
+
+The implementation branch is installable by accounts with repository access. The updated default-branch documentation and startup behavior become available after the implementation pull request is merged. No repository visibility change or hosted service is needed for private installation.
