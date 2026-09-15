@@ -27,7 +27,7 @@ Build prerequisites are Rust/Cargo and the platform C compiler. SQLite is compil
 
 ```sh
 cargo build --release --locked
-herdr plugin link "$PWD" --enabled
+herdr plugin link "$PWD"
 herdr integration install claude
 herdr integration install codex
 herdr plugin action invoke configure --plugin agent-progress
