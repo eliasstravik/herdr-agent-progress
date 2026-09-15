@@ -64,6 +64,8 @@ enum Action {
         pane: Option<String>,
     },
     Start,
+    /// Start when configured; a fresh install waits for explicit Configure.
+    Startup,
     Stop,
     #[command(hide = true)]
     Serve,
@@ -81,6 +83,12 @@ fn run(cli: Cli) -> Result<()> {
     }
     let action = cli.command.context("Choose a command; see --help")?;
     let paths = Paths::discover()?;
+    if matches!(action, Action::Startup) && !paths.enabled() {
+        println!(
+            "Run herdr plugin action invoke configure --plugin agent-progress to set up progress reporting."
+        );
+        return Ok(());
+    }
     if let Action::Hook { agent } = &action {
         // Context-only hooks never block tools or the agent's work.
         if let Err(e) = hooks::run(agent, &paths) {
@@ -105,7 +113,7 @@ fn run(cli: Cli) -> Result<()> {
     match action {
         Action::Configure(options) => setup::configure(&options, &rt, &paths),
         Action::Unconfigure => setup::unconfigure(&rt, &paths),
-        Action::Start => publisher::start(&rt, &paths),
+        Action::Start | Action::Startup => publisher::start(&rt, &paths),
         Action::Stop => publisher::stop(&rt, &paths),
         Action::Serve => publisher::serve(&rt, &paths),
         Action::Doctor => {

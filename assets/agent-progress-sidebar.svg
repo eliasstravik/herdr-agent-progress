@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" role="img" aria-labelledby="title desc">
+<title id="title">Know where the work stands</title><desc id="desc">Illustration of an expanded Herdr sidebar. Codex reports approximately 65 percent while testing changes. Claude has a stale estimate at 30 percent. Another task is done at 100 percent.</desc>
+<rect width="900" height="380" rx="14" fill="#0d1117"/>
+<path d="M300 22v336" stroke="#30363d"/>
+<g font-family="ui-monospace,Menlo,monospace">
+<text x="28" y="43" fill="#8b949e" font-size="13">HERDR / AGENTS</text>
+<circle cx="34" cy="87" r="4" fill="#3fb950"/><text x="50" y="92" fill="#e6edf3" font-size="16">codex · working</text>
+<text x="50" y="119" fill="#a6b3c2" font-size="13">~65% · Testing changes</text>
+<circle cx="34" cy="172" r="4" fill="#d29922"/><text x="50" y="177" fill="#e6edf3" font-size="16">claude · blocked</text>
+<text x="50" y="204" fill="#a6b3c2" font-size="13">~30% · stale · Reading code</text>
+<circle cx="34" cy="257" r="4" fill="#8b949e"/><text x="50" y="262" fill="#e6edf3" font-size="16">codex · idle</text>
+<text x="50" y="289" fill="#a6b3c2" font-size="13">100% · Done</text>
+<text x="28" y="349" fill="#8b949e" font-size="11">Illustrated example</text>
+</g>
+<g font-family="Arial,sans-serif">
+<text x="346" y="91" fill="#e6edf3" font-size="28" font-weight="bold">A quick look. Then back to work.</text>
+<text x="346" y="139" fill="#a6b3c2" font-size="18">The agent's estimate and current activity,</text>
+<text x="346" y="168" fill="#a6b3c2" font-size="18">beside the session you're already watching.</text>
+<rect x="346" y="208" width="496" height="1" fill="#30363d"/>
+<text x="346" y="246" fill="#3fb950" font-size="16">Estimates can change as the task grows.</text>
+<text x="346" y="278" fill="#a6b3c2" font-size="16">Old reports get a stale label after five minutes.</text>
+<text x="346" y="310" fill="#a6b3c2" font-size="16">Native working and blocked states stay separate.</text>
+</g></svg>

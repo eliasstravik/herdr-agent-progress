@@ -5,6 +5,26 @@ fn cli() -> Command {
 }
 
 #[test]
+fn fresh_install_startup_waits_for_configuration_without_writing_files() {
+    let dir = tempfile::tempdir().unwrap();
+    let output = cli()
+        .arg("startup")
+        .env_remove("HERDR_SOCKET_PATH")
+        .env("HERDR_PLUGIN_CONFIG_DIR", dir.path().join("config"))
+        .env("HERDR_PLUGIN_STATE_DIR", dir.path().join("state"))
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    assert!(
+        String::from_utf8(output.stdout)
+            .unwrap()
+            .contains("herdr plugin action invoke configure --plugin agent-progress")
+    );
+    assert!(output.stderr.is_empty());
+    assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 0);
+}
+
+#[test]
 fn instruction_aliases_are_read_only_and_identical() {
     let dir = tempfile::tempdir().unwrap();
     let mut outputs = Vec::new();

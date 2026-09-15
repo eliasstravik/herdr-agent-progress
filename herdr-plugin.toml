@@ -9,7 +9,19 @@ platforms = ["macos"]
 command = ["cargo", "build", "--release", "--locked"]
 
 [[startup]]
+command = ["target/release/herdr-progress", "startup"]
+
+[[actions]]
+id = "start"
+title = "Start progress publisher"
+contexts = ["workspace"]
 command = ["target/release/herdr-progress", "start"]
+
+[[actions]]
+id = "stop"
+title = "Stop progress publisher before upgrade"
+contexts = ["workspace"]
+command = ["target/release/herdr-progress", "stop"]
 
 [[actions]]
 id = "configure"
