@@ -4,10 +4,10 @@ Install the plugin, connect your coding client, and see task estimates in Herdr'
 
 ## 1. Check the prerequisites
 
-- macOS and [Herdr](https://herdr.dev) 0.9.0 or newer. Run these commands inside a running Herdr session.
-- Rust/Cargo and a C compiler. Herdr builds the executable during installation. On macOS, `xcode-select --install` installs Apple's command-line build tools if missing. Install Rust using [rustup](https://rustup.rs).
+- macOS or Linux and [Herdr](https://herdr.dev) 0.9.0 or newer. Run these commands inside a running Herdr session.
+- Rust/Cargo and a C compiler. Herdr builds the executable during installation. On macOS, `xcode-select --install` installs Apple's command-line build tools if missing. On Debian or Ubuntu, install `build-essential`. Install Rust using [rustup](https://rustup.rs).
 - Git and access to `eliasstravik/herdr-agent-progress`. The repository is currently private. Authenticate Git for GitHub before installing; with GitHub CLI, use `gh auth login` and `gh auth setup-git`. A repository-not-found error can mean your account lacks access.
-- Claude Code or Codex on `PATH`. Live-tested versions are Claude Code 2.1.272 and Codex 0.154.0. See [Compatibility](../compatibility.md) for exact evidence; earlier versions and other platforms are unverified.
+- Claude Code or Codex on `PATH`. Live-tested versions include Claude Code 2.1.272 and Codex 0.154.0 on macOS, and Claude Code 2.1.281 on Linux. See [Compatibility](../compatibility.md) for exact evidence; earlier versions and Windows are unverified.
 
 No Python, Node, hosted service, or separate API key is required by the installed plugin. Your coding client has its own prerequisites and account.
 
@@ -137,7 +137,7 @@ For a linked checkout, use `herdr plugin unlink agent-progress` instead of unins
 ## Troubleshooting
 
 - **Install says repository not found:** Confirm your GitHub account has access and Git can authenticate. This repository is not yet a public distribution.
-- **Cargo or a linker is missing:** Install Rust and Apple's command-line tools, then rerun the install.
+- **Cargo or a linker is missing:** Install Rust and your platform's C build tools, then rerun the install.
 - **Startup asks you to configure:** Run step 3. This is expected on a fresh install.
 - **No progress row:** Check that the plugin is enabled, run Configure, install the official client integration, restart or resume the client, and expand the agent sidebar. Start a real task and allow its normal reporting permission if prompted.
 - **Doctor says configured but no estimates appear:** Doctor checks plugin registration, not client trust or live reporting. Inspect `publisher.log` in the state directory it prints and the client's hook/permission messages.

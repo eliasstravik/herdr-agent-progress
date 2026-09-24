@@ -43,8 +43,8 @@ The [current Herdr agent list](https://herdr.dev/docs/agents/) defines the cover
 
 ## Platform and test boundary
 
-- macOS is the package target. The runtime verifies Unix socket identity and uses `ps` PID, parent PID and launch time. Herdr 0.9.0 exposes the required terminal/session/process and sequenced metadata capabilities.
-- Linux has not been live tested and is not listed in the plugin manifest.
+- macOS and Linux are package targets. The runtime verifies Unix socket identity and uses `ps` PID, parent PID and launch time. Herdr 0.9.0 exposes the required terminal/session/process and sequenced metadata capabilities.
+- Linux was live-tested on Debian GNU/Linux 13 x86_64 with Herdr 0.9.0 and Claude Code 2.1.281. A linked checkout built and configured successfully, resumed Claude sessions loaded the hooks, and a live session published progress metadata into Herdr's sidebar. All 22 Rust tests, Clippy with warnings denied, and the formatting check passed. Linux aarch64 has not yet been live-tested.
 - Windows reporting is unavailable because this implementation does not yet verify named-pipe server identity and caller launch identity. Merely forwarding transport to Herdr would not establish those facts.
 - A missing, mismatched or ambiguous identity is refused. There is no fallback to the focused pane or current occupant for an unbound agent command.
 - Live checks use isolated Herdr sessions and client hook files. See the results below; unit tests do not substitute for native client evidence.

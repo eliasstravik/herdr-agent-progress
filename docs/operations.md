@@ -12,7 +12,7 @@ Automatic instruction loading does not grant tool permissions. A sandbox may req
 
 ## Development status
 
-The implementation targets Herdr 0.9.0 on macOS. Live validation and the client support matrix are recorded in [compatibility.md](../compatibility.md). Other operating systems and agents are not advertised as automatically supported.
+The implementation targets Herdr 0.9.0 on macOS and Linux. Live validation and the client support matrix are recorded in [compatibility.md](../compatibility.md). Windows and other agents are not advertised as automatically supported.
 
 ## Install from a checkout
 
