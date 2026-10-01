@@ -105,7 +105,7 @@ No. Once configured, Claude Code and Codex load the reporting instructions when 
 
 ### What if an estimate is wrong or stops updating?
 
-The percentage is the agent's estimate, so it can go down when the agent finds more work. An unfinished report gets a `stale` label after five minutes without an update. Open the conversation to check; `Done` still needs your review.
+The percentage is the agent's estimate, so it can go down when the agent finds more work. An unfinished report gets a `stale` label after five minutes without an update, or `subagents` while the agent's subagents are still working. Open the conversation to check; `Done` still needs your review.
 
 ### What does it cost?
 

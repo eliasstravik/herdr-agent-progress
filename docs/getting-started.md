@@ -54,7 +54,7 @@ As the agent reports, you should see rows like:
 100% · Done
 ```
 
-These are examples, not fixed stages. The agent may revise its estimate or report an activity without a percentage. After five minutes without a report, an unfinished estimate is marked `stale`. Native working, blocked, and idle states stay separate.
+These are examples, not fixed stages. The agent may revise its estimate or report an activity without a percentage. After five minutes without a report, an unfinished estimate is marked `stale`, or `subagents` while the agent's subagents are still working. Native working, blocked, and idle states stay separate.
 
 A following task should start a new estimate. A clarification or continuation should keep the current task. Compaction and a verified native resume preserve its progress.
 
