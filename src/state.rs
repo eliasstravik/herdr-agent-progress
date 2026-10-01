@@ -31,6 +31,8 @@ pub struct Slot {
     pub task: Option<Task>,
     pub revoked: bool,
     pub reminded_at: i64,
+    #[serde(default)]
+    pub helpers_seen_at: i64,
     pub published: String,
 }
 
@@ -90,6 +92,7 @@ pub fn bootstrap(c: &Connection, identity: Identity) -> Result<Slot> {
         task,
         revoked: false,
         reminded_at: 0,
+        helpers_seen_at: 0,
         published: String::new(),
     };
     save(c, &s)?;
@@ -191,8 +194,13 @@ pub fn tokens(s: &Slot, now: i64) -> [Option<String>; 3] {
                 format!("~{p}%")
             }
         }),
-        (t.percent != Some(100) && now.saturating_sub(t.reported_at.unwrap()) >= 300)
-            .then(|| "stale".into()),
+        (t.percent != Some(100) && now.saturating_sub(t.reported_at.unwrap()) >= 300).then(|| {
+            if now.saturating_sub(s.helpers_seen_at) < 300 {
+                "subagents".into()
+            } else {
+                "stale".into()
+            }
+        }),
         t.activity.clone(),
     ]
 }
@@ -287,6 +295,19 @@ mod tests {
             [Some("100%".into()), None, Some("Done".into())]
         );
         assert!(report(&mut s, &id, Some(70), "More work", 704).is_err());
+    }
+    #[test]
+    fn recent_subagent_activity_replaces_stale() {
+        let mut s = initial();
+        begin(&mut s, "none", "Task").unwrap();
+        let id = s.task.as_ref().unwrap().id.clone();
+        report(&mut s, &id, Some(15), "Delegating", 100).unwrap();
+        s.helpers_seen_at = 450;
+        assert_eq!(tokens(&s, 500)[1], Some("subagents".into()));
+        assert_eq!(tokens(&s, 749)[1], Some("subagents".into()));
+        assert_eq!(tokens(&s, 750)[1], Some("stale".into()));
+        report(&mut s, &id, Some(30), "Reviewing results", 760).unwrap();
+        assert_eq!(tokens(&s, 800)[1], None);
     }
     #[test]
     fn launch_rotation_compaction_and_endpoint_isolation() {

@@ -31,7 +31,8 @@ pub fn run(agent: &str, paths: &Paths) -> Result<()> {
         .take(1_048_576)
         .read_to_string(&mut input)?;
     let event: Value = serde_json::from_str(&input)?;
-    if !eligible(&event) {
+    let helper = helper(&event);
+    if !helper && !eligible(&event) {
         return Ok(());
     }
     let kind = string(&event, "hook_event_name")?;
@@ -78,6 +79,18 @@ pub fn run(agent: &str, paths: &Paths) -> Result<()> {
         );
         s
     };
+    if helper {
+        if slot
+            .task
+            .as_ref()
+            .is_some_and(|t| t.percent != Some(100) && !t.cleared)
+        {
+            slot.helpers_seen_at = now();
+            state::save(&tx, &slot)?;
+        }
+        tx.commit()?;
+        return publisher::start(&rt, paths);
+    }
     let due = now() - slot.reminded_at >= 60
         && slot.task.as_ref().is_none_or(|t| {
             t.percent != Some(100) && !t.cleared && t.reported_at.is_none_or(|at| now() - at >= 60)
@@ -115,17 +128,21 @@ pub fn run(agent: &str, paths: &Paths) -> Result<()> {
     Ok(())
 }
 
-fn eligible(event: &Value) -> bool {
-    if ["agent_id", "subagent_id", "agent_transcript_path"]
+fn from_subagent(event: &Value) -> bool {
+    ["agent_id", "subagent_id", "agent_transcript_path"]
         .iter()
         .any(|key| event.get(key).is_some_and(|v| !v.is_null()))
-    {
-        return false;
-    }
-    if event["transcript_path"]
-        .as_str()
-        .is_some_and(|p| p.contains("/subagents/"))
-    {
+        || event["transcript_path"]
+            .as_str()
+            .is_some_and(|p| p.contains("/subagents/"))
+}
+
+fn helper(event: &Value) -> bool {
+    from_subagent(event) && event["hook_event_name"] == "PostToolUse"
+}
+
+fn eligible(event: &Value) -> bool {
+    if from_subagent(event) {
         return false;
     }
     let name = event["hook_event_name"].as_str().unwrap_or("");
@@ -151,6 +168,19 @@ mod tests {
         ));
         assert!(eligible(
             &json!({"hook_event_name":"SessionStart","source":"compact"})
+        ));
+    }
+    #[test]
+    fn subagent_tool_calls_count_as_helper_activity() {
+        assert!(helper(
+            &json!({"hook_event_name":"PostToolUse","agent_id":"child"})
+        ));
+        assert!(helper(
+            &json!({"hook_event_name":"PostToolUse","transcript_path":"/t/subagents/a.jsonl"})
+        ));
+        assert!(!helper(&json!({"hook_event_name":"PostToolUse"})));
+        assert!(!helper(
+            &json!({"hook_event_name":"UserPromptSubmit","agent_id":"child"})
         ));
     }
 }
