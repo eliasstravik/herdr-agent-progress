@@ -4,8 +4,8 @@ Install the plugin, connect your coding client, and see task estimates in Herdr'
 
 ## 1. Check the prerequisites
 
-- macOS and [Herdr](https://herdr.dev) 0.9.0 or newer. Run these commands inside a running Herdr session.
-- Rust/Cargo and a C compiler. Herdr builds the executable during installation. On macOS, `xcode-select --install` installs Apple's command-line build tools if missing. Install Rust using [rustup](https://rustup.rs).
+- macOS or Linux and [Herdr](https://herdr.dev) 0.9.0 or newer. Run these commands inside a running Herdr session on the machine where your agents run. For a remote machine, see [remote machines](#remote-machines).
+- Rust/Cargo and a C compiler. Herdr builds the executable during installation. On macOS, `xcode-select --install` installs Apple's command-line build tools if missing. On Debian or Ubuntu, `sudo apt install build-essential` provides the C compiler. Install Rust using [rustup](https://rustup.rs).
 - Git and access to `eliasstravik/herdr-agent-progress`. The repository is currently private. Authenticate Git for GitHub before installing; with GitHub CLI, use `gh auth login` and `gh auth setup-git`. A repository-not-found error can mean your account lacks access.
 - Claude Code or Codex on `PATH`. Live-tested versions are Claude Code 2.1.272 and Codex 0.154.0. See [Compatibility](../compatibility.md) for exact evidence; earlier versions and other platforms are unverified.
 
@@ -92,6 +92,17 @@ The stable launcher exists after the first Configure. For initial setup with alt
 
 Configure copies the executable into the plugin config directory and writes a stable launcher. Hooks do not depend on your shell's `PATH` or an old checkout location. No extra configuration is needed for the default sidebar row. See [Operations](operations.md) for custom tokens, command syntax, identity checks, and development.
 
+### Remote machines
+
+When you view a remote Herdr machine, for example a Linux workstation from a Mac, install and configure the plugin on the remote machine where the agents run. Herdr takes sidebar layouts from the client's local configuration, so Configure on the remote machine cannot add the progress row to the sidebar you see. Add it to the client's `config.toml` yourself and reload the configuration:
+
+```toml
+[ui.sidebar.agents]
+rows = [["state_icon", "machine", "workspace", "tab"], ["agent"], [{ token = "$agent_progress_summary", dim = true }]]
+```
+
+Keep any rows you already have and append the progress row. Unconfigure on the remote machine does not remove this client-side row.
+
 ## Upgrade
 
 Stop the publisher in **each running Herdr session** before replacing the package:
@@ -137,8 +148,10 @@ For a linked checkout, use `herdr plugin unlink agent-progress` instead of unins
 ## Troubleshooting
 
 - **Install says repository not found:** Confirm your GitHub account has access and Git can authenticate. This repository is not yet a public distribution.
-- **Cargo or a linker is missing:** Install Rust and Apple's command-line tools, then rerun the install.
+- **Cargo or a linker is missing:** Install Rust and Apple's command-line tools or `build-essential`, then rerun the install.
+- **The plugin works on the remote machine but no row appears in the sidebar:** Add the progress row to the client's configuration as described under [remote machines](#remote-machines).
 - **Startup asks you to configure:** Run step 3. This is expected on a fresh install.
+- **Configure skipped a client:** Plugin actions inherit the Herdr server's `PATH`, which may lack directories such as `~/.local/bin` when the server starts over SSH. Pass `--clients claude,codex` through the stable launcher as shown under [optional configuration](#optional-configuration).
 - **No progress row:** Check that the plugin is enabled, run Configure, install the official client integration, restart or resume the client, and expand the agent sidebar. Start a real task and allow its normal reporting permission if prompted.
 - **Doctor says configured but no estimates appear:** Doctor checks plugin registration, not client trust or live reporting. Inspect `publisher.log` in the state directory it prints and the client's hook/permission messages.
 - **The estimate is stale or moves backwards:** Both are expected. Stale means no report for five minutes; a lower estimate means the agent discovered more work.

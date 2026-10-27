@@ -8,7 +8,7 @@
 
 <p align="center"><a href="https://github.com/eliasstravik/herdr-agent-progress/blob/main/docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></p>
 
-<p align="center"><sub>✓&nbsp;Free,&nbsp;MIT&nbsp;licensed &nbsp; ✓&nbsp;No&nbsp;extra&nbsp;API&nbsp;key &nbsp; ✓&nbsp;Claude&nbsp;Code&nbsp;and&nbsp;Codex&nbsp;on&nbsp;macOS</sub></p>
+<p align="center"><sub>✓&nbsp;Free,&nbsp;MIT&nbsp;licensed &nbsp; ✓&nbsp;No&nbsp;extra&nbsp;API&nbsp;key &nbsp; ✓&nbsp;Claude&nbsp;Code&nbsp;and&nbsp;Codex&nbsp;on&nbsp;macOS&nbsp;and&nbsp;Linux</sub></p>
 
 <br />
 
@@ -60,7 +60,7 @@ An agent that reports 100% shows `Done`, so you can open the conversation and re
 
 <table align="center">
 <tr>
-<td align="center" valign="top"><sub>For developers who run Claude Code or Codex in Herdr on macOS</sub><br /><h2>Free</h2><div align="left">&nbsp;&nbsp;&nbsp;✓&nbsp; Task estimates beside each reporting session<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Current activity without opening the terminal<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Stale markers when an update gets old<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Done when an agent reports its task complete<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Progress restored when a verified session resumes<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Setup that keeps your existing hooks and settings</div></td>
+<td align="center" valign="top"><sub>For developers who run Claude Code or Codex in Herdr on macOS or Linux</sub><br /><h2>Free</h2><div align="left">&nbsp;&nbsp;&nbsp;✓&nbsp; Task estimates beside each reporting session<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Current activity without opening the terminal<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Stale markers when an update gets old<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Done when an agent reports its task complete<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Progress restored when a verified session resumes<br />&nbsp;&nbsp;&nbsp;✓&nbsp; Setup that keeps your existing hooks and settings</div></td>
 </tr>
 <tr>
 <td align="center"><a href="https://github.com/eliasstravik/herdr-agent-progress/blob/main/docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></td>
@@ -71,7 +71,7 @@ An agent that reports 100% shows `Done`, so you can open the conversation and re
 
 ### Do I need to know how to code?
 
-No. The plugin builds itself on install, and setup connects your coding clients and adds the sidebar row. You'll need macOS, Herdr 0.9.0 or newer, Rust/Cargo, and repository access. The [getting-started guide](docs/getting-started.md) covers the prerequisites and supported clients.
+No. The plugin builds itself on install, and setup connects your coding clients and adds the sidebar row. You'll need macOS or Linux, Herdr 0.9.0 or newer, Rust/Cargo, and repository access. The [getting-started guide](docs/getting-started.md) covers the prerequisites and supported clients.
 
 ### How do I check that Agent Progress is running?
 
@@ -117,4 +117,4 @@ Agent Progress is free and [MIT licensed](LICENSE). You need access to the priva
 
 <p align="center"><a href="https://github.com/eliasstravik/herdr-agent-progress/blob/main/docs/getting-started.md"><img src="assets/buttons/see-your-agents-progress.svg" alt="See your agents' progress" /></a></p>
 
-<p align="center"><sub>✓&nbsp;Free,&nbsp;MIT&nbsp;licensed &nbsp; ✓&nbsp;No&nbsp;extra&nbsp;API&nbsp;key &nbsp; ✓&nbsp;Claude&nbsp;Code&nbsp;and&nbsp;Codex&nbsp;on&nbsp;macOS</sub></p>
+<p align="center"><sub>✓&nbsp;Free,&nbsp;MIT&nbsp;licensed &nbsp; ✓&nbsp;No&nbsp;extra&nbsp;API&nbsp;key &nbsp; ✓&nbsp;Claude&nbsp;Code&nbsp;and&nbsp;Codex&nbsp;on&nbsp;macOS&nbsp;and&nbsp;Linux</sub></p>

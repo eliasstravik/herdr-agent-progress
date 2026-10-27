@@ -12,7 +12,7 @@ Automatic instruction loading does not grant tool permissions. A sandbox may req
 
 ## Development status
 
-The implementation targets Herdr 0.9.0 on macOS. Live validation and the client support matrix are recorded in [compatibility.md](../compatibility.md). Other operating systems and agents are not advertised as automatically supported.
+The implementation targets Herdr 0.9.0 on macOS and Linux. Live validation and the client support matrix are recorded in [compatibility.md](../compatibility.md). Other operating systems and agents are not advertised as automatically supported.
 
 ## Install from a checkout
 
@@ -70,7 +70,7 @@ SQLite transactions serialize task generation changes and publication decisions.
 
 The default dim row uses `$agent_progress_summary`, with percentage and freshness before the activity so shortening the tail preserves them. The separate `$agent_progress_percent`, `$agent_progress_freshness` and `$agent_progress_activity` tokens are also available for custom layouts. The summary is capped at 80 characters and display columns; the activity is capped at 40 columns.
 
-State lives in the plugin state directory, including `progress.sqlite3` and `publisher.log`. Per-endpoint OS file locks prevent competing background publishers. A crash releases the lock; Start, a valid hook or a reporting command restarts the publisher. Endpoint loss uses bounded backoff. Disabling or removing the Herdr registration makes hooks inert and causes the publisher to clear its tokens and exit when the endpoint remains reachable.
+State lives in the plugin state directory, including `progress.sqlite3` and `publisher.log`. Keep that directory on a local filesystem; SQLite WAL mode and OS file locks are unreliable on network filesystems such as NFS. Per-endpoint OS file locks prevent competing background publishers. A crash releases the lock; Start, a valid hook or a reporting command restarts the publisher. Endpoint loss uses bounded backoff. Disabling or removing the Herdr registration makes hooks inert and causes the publisher to clear its tokens and exit when the endpoint remains reachable.
 
 ## Remove
 

@@ -118,7 +118,11 @@ impl Runtime {
             .iter()
             .filter(|p| {
                 let name = p["name"].as_str().unwrap_or("");
-                let argv = p["argv0"].as_str().unwrap_or("");
+                // macOS reports argv0; Linux reports the argv array instead.
+                let argv = p["argv0"]
+                    .as_str()
+                    .or_else(|| p["argv"][0].as_str())
+                    .unwrap_or("");
                 Path::new(name).file_name().and_then(|x| x.to_str()) == Some(&agent)
                     || Path::new(argv).file_name().and_then(|x| x.to_str()) == Some(&agent)
             })

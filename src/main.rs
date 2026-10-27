@@ -122,7 +122,7 @@ fn run(cli: Cli) -> Result<()> {
                 "{}",
                 json!({"configured":paths.enabled(),"herdr_version":snapshot["snapshot"]["version"],"config_dir":paths.config,"state_dir":paths.state,
                 "automatic_adapters":"Claude Code and Codex hooks; native trust review required",
-                "platform":"Unix process ancestry and start-time verification; Windows unavailable",
+                "platform":format!("{}: Unix process ancestry and start-time verification; Windows unavailable", std::env::consts::OS),
                 "other_agents":"unverified/unavailable; --instructions provides the reporting convention but cannot mint a binding",
                 "log":paths.state.join("publisher.log")})
             );

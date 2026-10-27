@@ -43,8 +43,9 @@ The [current Herdr agent list](https://herdr.dev/docs/agents/) defines the cover
 
 ## Platform and test boundary
 
-- macOS is the package target. The runtime verifies Unix socket identity and uses `ps` PID, parent PID and launch time. Herdr 0.9.0 exposes the required terminal/session/process and sequenced metadata capabilities.
-- Linux has not been live tested and is not listed in the plugin manifest.
+- macOS and Linux are the package targets. The runtime verifies Unix socket identity and uses `ps` PID, parent PID and launch time. Herdr 0.9.0 exposes the required terminal/session/process and sequenced metadata capabilities. Linux process information reports an `argv` array instead of macOS's `argv0`; the runtime accepts both.
+- Linux (Ubuntu, procps-ng 4.0.4, Herdr 0.9.3, 2026-10-27): the locked release build, unit and CLI tests, Clippy and rustfmt pass. A linked checkout was configured on a Linux Herdr server viewed from a macOS client. Claude Code 2.1.311 bound its session through the SessionStart hook without manual activation, began a task, and reached `100% · Done` in the client's sidebar. Codex has not been live tested on Linux. Configure's client auto-detection missed Claude because the SSH-started server's `PATH` lacked `~/.local/bin`; `--clients claude,codex` resolved it.
+- With a remote machine, the plugin runs on the server where the agents run, while the sidebar layout comes from the client's local configuration. See the getting-started guide's remote machines section.
 - Windows reporting is unavailable because this implementation does not yet verify named-pipe server identity and caller launch identity. Merely forwarding transport to Herdr would not establish those facts.
 - A missing, mismatched or ambiguous identity is refused. There is no fallback to the focused pane or current occupant for an unbound agent command.
 - Live checks use isolated Herdr sessions and client hook files. See the results below; unit tests do not substitute for native client evidence.
